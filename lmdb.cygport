@@ -1,0 +1,40 @@
+NAME="lmdb"
+VERSION=0.9.19
+RELEASE=1
+CATEGORY="Libs"
+SUMMARY="Memory-mapped database"
+DESCRIPTION="LMDB is a fast, memory-efficient database. With memory-mapped files,
+it has the read performance of a pure in-memory database while retaining the
+persistence of standard disk-based databases."
+HOMEPAGE="http://symas.com/mdb/"
+SRC_URI="https://github.com/LMDB/lmdb/archive/LMDB_${VERSION}.tar.gz"
+SRC_DIR="lmdb-LMDB_${VERSION}/libraries/liblmdb"
+PATCH_URI="0.9.19-cygwin-dll.patch"
+
+PKG_NAMES="lmdb liblmdb0 liblmdb-devel"
+lmdb_CATEGORY="Database"
+lmdb_CONTENTS="
+	usr/bin/mdb_*
+	usr/share/doc/lmdb/
+	usr/share/man/man1/mdb_*
+"
+liblmdb0_CONTENTS="
+	usr/bin/cyglmdb-0.dll
+"
+liblmdb_devel_CONTENTS="
+	usr/include/lmdb.h
+	usr/lib/liblmdb.dll.a
+"
+
+src_compile() {
+	lndirs
+	cd ${B}
+	cygmake OPT="${CFLAGS}" SOEXT=".dll.a" CPPFLAGS="-DMDB_USE_ROBUST=0"
+}
+
+src_install() {
+	cd ${B}
+	cyginstall prefix=/usr SOEXT=".dll.a"
+	dobin cyglmdb-0.dll
+	rm -f ${D}/usr/lib/liblmdb.a
+}

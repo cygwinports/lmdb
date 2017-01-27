@@ -1,0 +1,14 @@
+--- origsrc/lmdb-LMDB_0.9.19/libraries/liblmdb/Makefile	2016-12-28 12:36:01.000000000 -0600
++++ src/lmdb-LMDB_0.9.19/libraries/liblmdb/Makefile	2017-01-27 12:19:03.620078300 -0600
+@@ -64,7 +64,10 @@ test:	all
+ liblmdb.a:	mdb.o midl.o
+ 	$(AR) rs $@ mdb.o midl.o
+ 
+-liblmdb$(SOEXT):	mdb.lo midl.lo
++liblmdb.dll.a:	mdb.lo midl.lo
++	$(CC) $(LDFLAGS) -shared -Wl,--out-implib,$@ -o cyglmdb-0.dll mdb.lo midl.lo $(SOLIBS)
++
++liblmdb.so:	mdb.lo midl.lo
+ #	$(CC) $(LDFLAGS) -pthread -shared -Wl,-Bsymbolic -o $@ mdb.o midl.o $(SOLIBS)
+ 	$(CC) $(LDFLAGS) -pthread -shared -o $@ mdb.lo midl.lo $(SOLIBS)
+ 
